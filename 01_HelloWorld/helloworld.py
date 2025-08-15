@@ -19,6 +19,7 @@ def acao():
 label_bomdia = tk.Label(janela, text="Digite seu nome e receba um bom dia do incrivel BOM DIA 3000!",
                         bg="#49be25",
                         font=("Verdana", 20), 
+                        pad
                         )
 label_bomdia = label_bomdia.pack()
 # Textos aviso
@@ -31,7 +32,7 @@ label_aviso.pack(pady=1, padx=300) # Label pack é para pegar a label e colocar 
 # Campos de textos:
 
 campo_musica = tk.Entry(janela)
-campo_musica.pack(pady=5)
+campo_musica.pack(pady=10)
 
 #Botoes
 botao_procurar = tk.Button(janela, text="Procurar musica", command=acao)
