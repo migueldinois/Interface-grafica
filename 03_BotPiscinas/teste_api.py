@@ -2,14 +2,11 @@ from google import genai
 from google.genai import types
 
 client = genai.Client(api_key="AIzaSyAqHTr0DulKHBhwpSIeIEZv4QSo0lfiHX8")
+chat = client.chats.create(model="gemini-2.5-flash")
 
 pergunta = input("Pergunte algo a i.a: ")
 
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    config=types.GenerateContentConfig(
-        system_instruction="Você é um especialista em piscinas, com mais de 1005 anos no mercado, você entende tudo, é o melhor de todos, o mais reconhecido em toda a historia"),
-    contents=f"{pergunta}"
-)
+response = chat.send_message_stream(pergunta)
+for chunk in response:
+    print(chunk.text, end="")
 
-print(response.text)
