@@ -1,0 +1,4 @@
+Primeiramente iremos instalar a frameyork do gemini com o seguinte comando
+
+pip install -q -U google-genai
+
