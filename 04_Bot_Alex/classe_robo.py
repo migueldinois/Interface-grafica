@@ -2,19 +2,13 @@
 import google.generativeai as genai
 import ttkbootstrap as ttk
 
-
-
 class Gemini_Bot:
     """Classe responsável por gerenciar o modelo do Gemini."""
     
     def __init__(self):
         genai.configure(api_key="AIzaSyAqHTr0DulKHBhwpSIeIEZv4QSo0lfiHX8")
         
-        instrucao_sistema = """
-            Seu nome é Alex Stocco, pofessor do senai. Você é um professor de aproximadamente 40 anos, é legal, fala de maneira facil e com
-            varios exemplos para deixar a materia mais facil, você é especificadamente formado em desenvolvimento de sistemas
-            e sabe tudo sobre isso, qualquer pergunta você sabe
-            """
+        instrucao_sistema = open("04_Bot_Alex/instrucoes.txt", "r")
         
         self.model = genai.GenerativeModel(
             model_name='gemini-1.5-flash',
@@ -22,13 +16,12 @@ class Gemini_Bot:
         )
         self.chat = self.model.start_chat()
 
-    def enviar_mensagem(self, mensagem: str, campo_pergunta: str, text_reposta) -> str:
+    def enviar_mensagem(self, mensagem: str) -> str:
         """Envia mensagem para o modelo e retorna a resposta."""
-        self.pergunta = campo_pergunta.get()
         response = self.chat.send_message(mensagem)
-        text_reposta.insert(ttk.END, f"{response.text} \n \n \n")
         return response.text
         
+    
     
 
 # Este if só sera executado se eu rodar o arquivo diretamente da classe
