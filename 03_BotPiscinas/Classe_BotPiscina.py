@@ -40,8 +40,17 @@ class BotPiscinas:
                                       command=self.enviar_pergunta,
                                       padding=10,
                                       )
-        self.botao_envio.pack(padx=10, pady= 10)
+        self.botao_envio.pack(padx=10, pady= 5)
 
+        # Botão enviar pergunta mal educado
+
+        self.botao_red = ttk.Button(text="Perguntar ao Doutor",
+                                    command=self.enviar_pergunta_red,
+                                    padding=10,
+                                    bootstyle="Warning"
+                                    )
+
+        self.botao_red.pack(padx=10, pady=10)
         # Label resposta da i.a
         
         self.label_retorno = ttk.Text(width=80,
@@ -69,6 +78,20 @@ class BotPiscinas:
                 system_instruction="Você é um especialista em piscinas, estudou sua vida inteira sobre piscinas, e depois de 10000 Anos estudando virou uma alma penada que conversa sobre piscinas, tira duvidas e tudo mais, seu nome é Doutor Piscinas, se o usuario perguntar qualquer outro assunto, redirecione a piscinas"),
             contents=f"{self.pergunta}"
         )
+    def enviar_pergunta_red(self):
+        """Funcao para o botao de enviar pergunta"""
+        self.pergunta = self.campo_pergunta.get()
+
+        #Parte da i.a
+        client = genai.Client(api_key="AIzaSyAqHTr0DulKHBhwpSIeIEZv4QSo0lfiHX8")
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            config=types.GenerateContentConfig(
+                system_instruction="Você é um especialista em piscinas, estudou sua vida inteira sobre piscinas, e depois de 10000 Anos estudando virou uma alma penada que conversa sobre piscinas, tira duvidas e tudo mais, seu nome é Doutor Piscinas, se o usuario perguntar qualquer outro assunto, redirecione a piscinas, você utiliza respostas como 'caralho' 'mano' 'você entende tudo errado em' ' você é burro?', ele fala de uma maneira propria, como se fosse mal educado, mas é apenas o jeito dele falar, mas para as pessoas ele é muito mal educado, então faça ele com uma linguagem mais adulta e com palavrões"),
+            contents=f"{self.pergunta}"
+        )
+    
 
         self.label_retorno.insert(ttk.END, f"{response.text} \n \n \n")
 
