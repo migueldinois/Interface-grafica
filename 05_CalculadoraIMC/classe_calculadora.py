@@ -22,7 +22,7 @@ class CalculatorIMC:
         self.textopeso.pack()
         self.peso = ttk.Entry(self.janela)
         self.peso.pack(padx=5, pady=5)
-        self.textoaltura = ttk.Label(self.janela, text="Digite sua altura: ")
+        self.textoaltura = ttk.Label(self.janela, text="Digite sua altura (Céntimetros): ")
         self.textoaltura.pack()
         self.altura = ttk.Entry(self.janela)
         self.altura.pack(padx=5, pady=5)
