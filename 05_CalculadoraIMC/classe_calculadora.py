@@ -1,7 +1,7 @@
 # PESO/altura(m)2
 
 import ttkbootstrap as ttk
-import tkinter
+import tkinter.messagebox
 from PIL import Image, ImageTk
 
 class CalculatorIMC:
@@ -46,33 +46,48 @@ class CalculatorIMC:
 
     def calcular_imc(self):
         """Função para calcular o imc de acordo com as respostas do usuario"""
-        peso_pessoa = float(self.peso.get())
-        altura_pessoa = float(self.altura.get())
-        # Calculando IMC
-        altura_metros = altura_pessoa / 100
-        self.resultado_imc = peso_pessoa / (altura_metros ** 2)
-        self.resposta.config(text=f"Valor do IMC: {self.resultado_imc:.2f}")
+        self.verificar_campos()
+        if self.verificado_altura == "1" and self.verificado_peso == "1":
+            peso_pessoa = self.peso.get()
+            altura_pessoa = self.altura.get()
+            # Calculando IMC
+            altura_metros = float(altura_pessoa) / 100
+            self.resultado_imc = float(peso_pessoa) / (float(altura_metros) ** 2)
+            self.resposta.config(text=f"Valor do IMC: {self.resultado_imc:.2f}")
 
-        # Determinando classificacao dela
-        self.determinar_categoria()
-        self.categoria_imc.config(text=f"Você está {self.classificacao}")
+            # Determinando classificacao dela
+            self.determinar_categoria()
+            self.categoria_imc.config(text=f"Você está {self.classificacao}")
 
-        self.imagem_mostrar = "Imagem indi"
-        if self.classificacao == "Abaixo do Peso Normal":
-            self.imagem_mostrar = self.imagem1
-        if self.classificacao == "No Peso Normal":
-            self.imagem_mostrar = self.imagem2
-        if self.classificacao == "Em Excesso de peso":
-            self.imagem_mostrar = self.imagem3
-        if self.classificacao == "Com Obesidade Grau 1":
-            self.imagem_mostrar = self.imagem4
-        if self.classificacao == "Com Obesidade Grau 2":
-            self.imagem_mostrar = self.imagem5
-        if self.classificacao == "Com Obesidade Grau 3":
-            self.imagem_mostrar = self.imagem6
+            self.imagem_mostrar = "Imagem indi"
+            if self.classificacao == "Abaixo do Peso Normal":
+                self.imagem_mostrar = self.imagem1
+            if self.classificacao == "No Peso Normal":
+                self.imagem_mostrar = self.imagem2
+            if self.classificacao == "Em Excesso de peso":
+                self.imagem_mostrar = self.imagem3
+            if self.classificacao == "Com Obesidade Grau 1":
+                self.imagem_mostrar = self.imagem4
+            if self.classificacao == "Com Obesidade Grau 2":
+                self.imagem_mostrar = self.imagem5
+            if self.classificacao == "Com Obesidade Grau 3":
+                self.imagem_mostrar = self.imagem6
 
-        self.imagem_classificada.config(image=self.imagem_mostrar)
+            self.imagem_classificada.config(image=self.imagem_mostrar)
         
+    def verificar_campos(self):
+        self.peso_entry = self.peso.get()
+        self.altura_entry = self.altura.get()
+        self.verificado_peso = "1"
+        self.verificado_altura = "1"
+        
+        if self.peso_entry == "":
+            tkinter.messagebox.showwarning("Atenção!","Insira seu peso")
+            self.verificado_peso = "0"
+        if self.altura_entry == "":
+            tkinter.messagebox.showwarning("Atenção!","Insira sua altura")
+            self.verificado_altura = "0"
+
         
     
 
