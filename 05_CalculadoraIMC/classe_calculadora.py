@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 class CalculatorIMC:
     def __init__(self):
         
-        self.janela = ttk.Window(themename="superhero")
+        self.janela = ttk.Window(themename="morph")
         self.janela.geometry("1280x720+260+160")
         self.janela.resizable(False, False)
         self.janela.title("Calculadora IMC")
@@ -38,20 +38,64 @@ class CalculatorIMC:
         self.categoria_imc = ttk.Label(self.janela, text="")
         self.categoria_imc.pack()
 
+        # COlocando fotos para cada tipo de peso
+
+
+        self.imagem_classificada = ttk.Label(self.janela, image="")
+        self.imagem_classificada.pack()
+
     def calcular_imc(self):
         """Função para calcular o imc de acordo com as respostas do usuario"""
         peso_pessoa = float(self.peso.get())
         altura_pessoa = float(self.altura.get())
-        # Transformando altura em metross
+        # Calculando IMC
         altura_metros = altura_pessoa / 100
         self.resultado_imc = peso_pessoa / (altura_metros ** 2)
         self.resposta.config(text=f"Valor do IMC: {self.resultado_imc:.2f}")
+
+        # Determinando classificacao dela
         self.determinar_categoria()
         self.categoria_imc.config(text=f"Você está {self.classificacao}")
+
+        self.imagem_mostrar = "Imagem indi"
+        if self.classificacao == "Abaixo do Peso Normal":
+            self.imagem_mostrar = self.imagem1
+        if self.classificacao == "No Peso Normal":
+            self.imagem_mostrar = self.imagem2
+        if self.classificacao == "Em Excesso de peso":
+            self.imagem_mostrar = self.imagem3
+        if self.classificacao == "Com Obesidade Grau 1":
+            self.imagem_mostrar = self.imagem4
+        if self.classificacao == "Com Obesidade Grau 2":
+            self.imagem_mostrar = self.imagem5
+        if self.classificacao == "Com Obesidade Grau 3":
+            self.imagem_mostrar = self.imagem6
+
+        self.imagem_classificada.config(image=self.imagem_mostrar)
+        
+        
     
 
     def determinar_categoria(self):
         """Função para determinar a categoria do peso da pessoa, obesidade, peso ideal e etc"""
+
+        # Abrindo Imagens e carregando imagens
+        self.imagem_abaixo_peso = Image.open("05_CalculadoraIMC/imagens/baixo_peso.png")
+        self.imagem_peso_ideal = Image.open("05_CalculadoraIMC/imagens/peso_ideal.png")
+        self.imagem_excesso_peso = Image.open("05_CalculadoraIMC/imagens/excesso_peso.png")
+        self.imagem_obesidade_grauI = Image.open("05_CalculadoraIMC/imagens/Obesidade_grau1.png")
+        self.imagem_obesidade_grauII = Image.open("05_CalculadoraIMC/imagens/Obesidade_grau2.png")
+        self.imagem_obesidade_grauIII = Image.open("05_CalculadoraIMC/imagens/Obesidade_grau3.png")
+
+        self.imagem1 = ImageTk.PhotoImage(self.imagem_abaixo_peso)
+        self.imagem2 = ImageTk.PhotoImage(self.imagem_peso_ideal)
+        self.imagem3 = ImageTk.PhotoImage(self.imagem_excesso_peso)
+        self.imagem4 = ImageTk.PhotoImage(self.imagem_obesidade_grauI)
+        self.imagem5 = ImageTk.PhotoImage(self.imagem_obesidade_grauII)
+        self.imagem6 = ImageTk.PhotoImage(self.imagem_obesidade_grauIII)
+
+
+
         if self.resultado_imc < 18.5:
             self.classificacao = "Abaixo do Peso Normal"
         if self.resultado_imc >= 18.5 and self.resultado_imc <= 24.9:
@@ -66,11 +110,9 @@ class CalculatorIMC:
             self.classificacao = "Com Obesidade Grau 3"
         
         return self.classificacao
-    
-    def imagem_categoria(self):
-        self.imagem_abaixo_peso = Image.open("05_CalculadoraIMC/imagens/baixo_peso.png")
-        self.imagem_peso_ideal = Image.open("05_CalculadoraIMC/imagens/peso_ideal.png")
-        self.imagem_excesso_peso = Image.open()
+        
+
+        
         
 
 
