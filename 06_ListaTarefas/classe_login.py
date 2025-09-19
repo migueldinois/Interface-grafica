@@ -4,11 +4,12 @@ import tkinter
 import json
 import random
 from tkinter import messagebox
+from classe_lista_tarefas import ListaDeTarefas
 
 class Login:
     def __init__(self):
         
-        self.janela = ttk.Window(themename="morph")
+        self.janela = ttk.Window(themename="vapor")
         self.janela.protocol("WM_DELETE_WINDOW", self.quando_fechar)
         self.janela.iconbitmap("06_ListaTarefas/icons/icone.ico")
         self.janela.geometry("1280x720+260+160")
@@ -17,7 +18,8 @@ class Login:
         
 
         # Titulo Principal da janela de login
-        bemVindo = ttk.Label(self.janela, text="Bem vindo!", font=("Segoe UI", 20))
+        bemVindo = ttk.Label(self.janela, text="Bem vindo!" \
+        ",", font=("Segoe UI", 20))
         bemVindo.pack()
 
         loginContinue = ttk.Label(self.janela, text="Faça login para continuar:", font=("Verdana", 14), padding=10)
@@ -42,7 +44,8 @@ class Login:
 
         cancelar_botao = ttk.Button(frame_botao,text="Cancelar", padding=10, command=self.exit).pack(side="right", padx=4)
  
-        # cancelar_botao.place(x=635, y=180)
+ 
+
         
     def logar_funcao(self):
         self.resposta_usuario = self.campo_usuario.get()
@@ -50,6 +53,11 @@ class Login:
 
         if self.resposta_usuario == "1" and self.resposta_senha == "1":
             tkinter.messagebox.showinfo("Logado com sucesso!", "Aproveite o melhor aplicativo do mundo!")
+            self.janela.destroy()
+            tela_lista = ListaDeTarefas()
+            tela_lista.run()
+
+
         else:
             tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")  
 
@@ -57,13 +65,14 @@ class Login:
         exit()
         
     def quando_fechar(self):
-        if messagebox.askyesno("Aviso", "Deseja fechar o Aplicativo?"):
+        if messagebox.askyesno("Aviso", "Deseja fechar o Aplicativo?") == True:
             exit()
 
     def run(self):
         self.janela.mainloop()
         
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     app = Login()
     app.run()
+    

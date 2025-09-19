@@ -41,7 +41,7 @@ class ListaDeTarefas:
         cancelar_botao.place(x=650, y= 230) 
 
     # Campo para listar as tarefas
-        self.lista_tarefas = ttk.Text(wrap="word", state="disabled")
+        self.lista_tarefas = tkinter.Listbox(state="disabled", width=100)
         self.lista_tarefas.pack()
 
 
@@ -52,19 +52,13 @@ class ListaDeTarefas:
         # Pegar o texto do entryu
         self.tarefa_texto = self.tarefa.get()
         # Salvar a lista inteira no dicionario
-        lista_de_tarefas = {"teste": self.tarefa_texto}
-        nome_arquivo_json = "dados_texto.json"
-        try:
-            with open(nome_arquivo_json, 'w') as arquivo_json:
-                json.dump(lista_de_tarefas, arquivo_json)
-        except:
-            messagebox.askretrycancel("Erro", "Não foi possivel salvar")
-
-
         tkinter.messagebox.showinfo("Tarefa Adicionada", f"A tarefa {self.tarefa_texto} foi adicionada a lista de tarefas!")
 
         self.lista_tarefas.insert(ttk.END, f"{self.tarefa_texto} \n")
         self.lista_tarefas.config(state="disabled")
+
+
+
 
     def run(self):
         self.janela.mainloop()
