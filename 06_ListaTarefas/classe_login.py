@@ -54,11 +54,11 @@ class Login:
             tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")  
 
     def exit(self):
-        self.janela.destroy()
+        exit()
         
     def quando_fechar(self):
         if messagebox.askyesno("Aviso", "Deseja fechar o Aplicativo?"):
-            self.janela.destroy() 
+            exit()
 
     def run(self):
         self.janela.mainloop()
