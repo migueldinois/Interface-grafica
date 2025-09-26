@@ -10,27 +10,14 @@ from tkinter import messagebox
 
 class ListaDeTarefas:
 
-    
+    conexao = sqlite3.connect("banco.db")
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        '''CREATE TABLE Tarefas'''
+    )
 
     def __init__(self):
-
-
-
-        # conectando ao banco de dados
-        bancodedados = sqlite3.connect("banco_de_dados.db")
-        cursor = bancodedados.cursor()
-
-        # #Criando a tabela  
-        # cursor.execute('''CREATE TABLE Tarefas
-        #                (ID_TAREFA INT, 
-        #                NOME_TAREFA VARCHAR(50) NOT NULL
-        #                )''')
-
-        # #Exibindo os dados do banco dentro da caixa de texto
-
-        # # Colocando dados test
-        # cursor.execute("INSERT INTO Tarefas values (?, ?)", ("C", 1972))
-
 
         self.janela = ttk.Window(themename="vapor")
         self.janela.iconbitmap("06_ListaTarefas/icons/icone.ico")
@@ -79,24 +66,36 @@ class ListaDeTarefas:
     def add_tarefa(self):
         # Pegar o texto do entryu
         self.tarefa_texto = self.tarefa.get()
-        # Salvar a lista inteira no dicionario
-        tkinter.messagebox.showinfo("Tarefa Adicionada", f"A tarefa {self.tarefa_texto} foi adicionada a lista de tarefas!")
+        # Salvar a lista inteira no dicionari
 
         # Adicionando um texto no final campo
         self.lista_tarefas.insert(ttk.END, f"{self.tarefa_texto} \n")
 
     def remove_tarefa(self):
         tarefa_selecionada = self.lista_tarefas.curselection()
-        self.lista_tarefas.delete(tarefa_selecionada[0])
+
+        if tarefa_selecionada:
+            self.lista_tarefas.delete(tarefa_selecionada[0])
+        else:
+            messagebox.showerror("Aviso", "Escolha uma tarefa para excluir!")
 
     def marcar_concluido(self):
         tarefa_selecionada = self.lista_tarefas.curselection()
-        self.lista_tarefas.itemconfig(tarefa_selecionada, {"fg": "green", "selectforeground": "green"})
+        texto_tarefa = self.lista_tarefas.get(tarefa_selecionada)
+
+
+        if tarefa_selecionada:
+
+            self.lista_tarefas.delete(tarefa_selecionada[0])
+            self.lista_tarefas.insert(tarefa_selecionada[0], texto_tarefa + "[CONCLUIDO]")
+            # Deixando verde
+            self.lista_tarefas.itemconfig(tarefa_selecionada, {"fg": "green", "selectforeground": "green"})
+            
+        else:
+            messagebox.showerror("Aviso", "Selecione uma tarefa para concluir.")
 
     def run(self):
         self.janela.mainloop()
-
-
     
 
 if __name__ == "__main__":
