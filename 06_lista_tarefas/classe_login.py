@@ -4,14 +4,18 @@ import tkinter
 import json
 import random
 from tkinter import messagebox
-from classe_lista_tarefas import ListaDeTarefas
+
 
 class Login:
-    def __init__(self):
+    def __init__(self, janelaPai):
         
-        self.janela = ttk.Window(themename="vapor")
+        self.janela = ttk.Toplevel(janelaPai)
+
+        # Configurando para que quando feche a janela de login ele feche o programa!
+
+
         self.janela.protocol("WM_DELETE_WINDOW", self.quando_fechar)
-        self.janela.iconbitmap("06_ListaTarefas/icons/icone.ico")
+        self.janela.iconbitmap("06_Lista_Tarefas/icons/icone.ico")
         self.janela.geometry("1280x720+260+160")
         self.janela.resizable(False, False)
         self.janela.title("Lista de Tarefas - Login")
@@ -35,7 +39,7 @@ class Login:
 
         # Botoes de cancelar e logar
 
-        frame_botao = ttk.Frame()
+        frame_botao = ttk.Frame(self.janela)
         frame_botao.pack()
 
         logar_botao = ttk.Button(frame_botao,text="Logar",padding=10, command=self.logar_funcao).pack(side="left", padx=4, pady=10)

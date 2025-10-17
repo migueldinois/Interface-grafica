@@ -53,9 +53,9 @@ class Login:
         cadastro_botao = ttk.Button(frame_botao,text="Cadastrar-se",padding=10, command=self.cadastro_funcao).pack(side="left", padx=4, pady=10)
 
         cancelar_botao = ttk.Button(frame_botao,text="Cancelar", padding=10, command=self.exit).pack(side="right", padx=4)
- 
-          #Conectando ao banco de dados
-        conexao = sqlite3.connect("06_lista_tarefas/usuarios.sqlite")
+
+        #Conectando ao banco de dados
+        conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
 
         #Criando responsavel por comandar o Banco de Dados 
         cursor = conexao.cursor()
@@ -108,8 +108,29 @@ class Login:
         self.resposta_senha = self.campo_senha.get()
         self.resposta_senha2 = self.campo_senha2.get()
 
+        if self.resposta_senha == self.resposta_senha2:
+            conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
+            cursor = conexao.cursor()
 
+            sql_cadastrar_usuario = """
+                INSERT INTO usuarios(nome, usuario, senha)
+                VALUES(?, ?, ?)
+                """
+            
+            valores = [self.resposta_nome, self.resposta_usuario, self.resposta_senha]
 
+            cursor.execute(sql_cadastrar_usuario, valores)
+            
+            conexao.commit()
+
+            messagebox.showinfo(message="você foi cadastrado!")
+            cursor.close()
+            conexao.close()
+            
+        else:
+            messagebox.showerror(message="Suas senhas não são iguais! ")
+
+    
 
     def exit(self):
         exit()
@@ -125,4 +146,3 @@ class Login:
 if __name__ == "__main__":    
     app = Login()
     app.run()
-    

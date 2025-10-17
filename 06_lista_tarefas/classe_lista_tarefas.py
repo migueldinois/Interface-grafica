@@ -6,6 +6,7 @@ import json
 import sqlite3
 import random
 from tkinter import messagebox
+from classe_login import Login
 
 
 class ListaDeTarefas:
@@ -81,6 +82,11 @@ class ListaDeTarefas:
 
         self.atualizar_lista()
 
+
+        Login(self.janela)
+        # Esconedendo a janela de tarefas
+        self.janela.withdraw()
+
     def atualizar_lista(self):
 
         #atualizar tarefa 
@@ -151,10 +157,11 @@ class ListaDeTarefas:
 
                         """
             
-            valor_delete = (texto_indice, texto_indice)
             
             
-            cursor.execute(sql_delete, valor_delete)
+            cursor.execute(sql_delete, [texto_indice])
+            conexao.commit()
+            conexao.close()
             
 
 
