@@ -4,18 +4,19 @@ import tkinter
 import json
 import random
 from tkinter import messagebox
-from classe_lista_tarefas import ListaDeTarefas
 import sqlite3
 
-class Login:
-    def __init__(self):
+class Cadastro:
+    def __init__(self, PaidoCadastro):
         
-        self.janela = ttk.Window(themename="vapor")
+        self.paidocadastro = PaidoCadastro
+
+        self.janela = ttk.Toplevel(PaidoCadastro)
         self.janela.protocol("WM_DELETE_WINDOW", self.quando_fechar)
         self.janela.iconbitmap("06_Lista_Tarefas/icons/icone.ico")
         self.janela.geometry("1280x720+260+160")
         self.janela.resizable(False, False)
-        self.janela.title("Lista de Tarefas - Login")
+        self.janela.title("Lista de Tarefas - Cadastro")
         
 
         # Titulo Principal da janela de login
@@ -47,7 +48,7 @@ class Login:
 
         # Botoes de cancelar e logar
 
-        frame_botao = ttk.Frame()
+        frame_botao = ttk.Frame(self.janela)
         frame_botao.pack()
 
         cadastro_botao = ttk.Button(frame_botao,text="Cadastrar-se",padding=10, command=self.cadastro_funcao).pack(side="left", padx=4, pady=10)
@@ -124,6 +125,9 @@ class Login:
             conexao.commit()
 
             messagebox.showinfo(message="você foi cadastrado!")
+            self.janela.destroy()
+            self.paidocadastro.deiconify()
+            
             cursor.close()
             conexao.close()
             

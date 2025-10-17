@@ -5,7 +5,7 @@ import json
 import random
 from tkinter import messagebox
 import sqlite3
-
+from cadastro import Cadastro
 
 class Login:
     def __init__(self, janelaPai):
@@ -45,9 +45,7 @@ class Login:
         frame_botao.pack()
 
         logar_botao = ttk.Button(frame_botao,text="Logar",padding=10, command=self.logar_funcao).pack(side="left", padx=4, pady=10)
-
-
-
+        cadastro_botao = ttk.Button(frame_botao, text="Cadastro", padding=10, command=self.tela_cadastro).pack(padx=4, pady=10)
         cancelar_botao = ttk.Button(frame_botao,text="Cancelar", padding=10, command=self.exit).pack(side="right", padx=4)
  
  
@@ -81,7 +79,12 @@ class Login:
             tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")  
 
 
-
+    def tela_cadastro(self):
+        self.janela.withdraw()
+        TelaCadastro = Cadastro(PaidoCadastro=self.janela)
+        TelaCadastro.run()
+        
+        
 
 
     def exit(self):
