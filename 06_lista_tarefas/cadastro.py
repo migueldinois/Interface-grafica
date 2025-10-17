@@ -64,9 +64,8 @@ class Cadastro:
         #Criando tabela 
         sql_para_criar_tabela = """
                                 CREATE TABLE IF NOT EXISTS usuarios (
-                                codigo integer primary key autoincrement,
                                 nome varchar(80),
-                                usuario varchar(24),
+                                usuario varchar(24) primary key,
                                 senha varchar(20)
                                 );
                                 """
