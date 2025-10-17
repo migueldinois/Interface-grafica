@@ -4,11 +4,13 @@ import tkinter
 import json
 import random
 from tkinter import messagebox
+import sqlite3
 
 
 class Login:
     def __init__(self, janelaPai):
         
+        self.janelaPai = janelaPai
         self.janela = ttk.Toplevel(janelaPai)
 
         # Configurando para que quando feche a janela de login ele feche o programa!
@@ -55,15 +57,32 @@ class Login:
         self.resposta_usuario = self.campo_usuario.get()
         self.resposta_senha = self.campo_senha.get()
 
-        if self.resposta_usuario == "1" and self.resposta_senha == "1":
+        conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
+        cursor = conexao.cursor()
+        
+        sql_verificar_login = """SELECT * FROM usuarios
+                                 WHERE usuario = ? AND senha = ?
+                              """ 
+        
+        cursor.execute(sql_verificar_login, (self.resposta_usuario, self.resposta_senha))
+        
+        # Pega o primeiro resultado   do select
+        usuario_encontrado = cursor.fetchone()
+
+        conexao.close()
+
+        if usuario_encontrado:
             tkinter.messagebox.showinfo("Logado com sucesso!", "Aproveite o melhor aplicativo do mundo!")
             self.janela.destroy()
-            tela_lista = ListaDeTarefas()
-            tela_lista.run()
-
+            # Reexibir a janela pai
+            self.janelaPai.deiconify()
 
         else:
             tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")  
+
+
+
+
 
     def exit(self):
         exit()

@@ -99,7 +99,7 @@ class ListaDeTarefas:
                                         """
         cursor.execute(sql_para_selecionar_tarefas)
 
-        lista_de_tarefas =cursor.fetchall()
+        lista_de_tarefas = cursor.fetchall()
 
         cursor.close()
         conexao.close()
