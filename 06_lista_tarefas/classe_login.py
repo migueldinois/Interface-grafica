@@ -57,7 +57,7 @@ class Login:
         conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
         cursor = conexao.cursor()
         
-        sql_verificar_login = """SELECT * FROM usuarios
+        sql_verificar_login = """SELECT nome, usuario FROM usuarios
                                 WHERE usuario = ? AND senha = ?""" 
         
         cursor.execute(sql_verificar_login, (self.resposta_usuario, self.resposta_senha))
@@ -65,7 +65,7 @@ class Login:
         conexao.close()
 
         if usuario_encontrado:
-            tkinter.messagebox.showinfo("Logado com sucesso!", "Aproveite o melhor aplicativo do mundo!")
+            tkinter.messagebox.showinfo(message=f"Bem vindo(a)!", "{usuario_encontrado[0]}"415)
             
             self.janela.destroy()
             
