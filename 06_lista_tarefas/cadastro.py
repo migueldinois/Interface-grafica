@@ -109,29 +109,35 @@ class Cadastro:
         self.resposta_senha2 = self.campo_senha2.get()
 
         if self.resposta_senha == self.resposta_senha2:
-            conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
-            cursor = conexao.cursor()
+            try:
+                conexao = sqlite3.connect("06_lista_tarefas/bd_lista_tarefas.sqlite")
+                cursor = conexao.cursor()
 
-            sql_cadastrar_usuario = """
-                INSERT INTO usuarios(nome, usuario, senha)
-                VALUES(?, ?, ?)
-                """
-            
-            valores = [self.resposta_nome, self.resposta_usuario, self.resposta_senha]
+                sql_cadastrar_usuario = """
+                    INSERT INTO usuarios(nome, usuario, senha)
+                    VALUES(?, ?, ?)
+                    """
+                
+                valores = [self.resposta_nome, self.resposta_usuario, self.resposta_senha]
 
-            cursor.execute(sql_cadastrar_usuario, valores)
-            
-            conexao.commit()
+                cursor.execute(sql_cadastrar_usuario, valores)
+                
+                conexao.commit()
 
-            messagebox.showinfo(message="você foi cadastrado!")
-            self.janela.destroy()
-            self.paidocadastro.deiconify()
-            
-            cursor.close()
-            conexao.close()
-            
+                messagebox.showinfo(message="você foi cadastrado!")
+                self.janela.destroy()
+                self.paidocadastro.deiconify()
+                
+                cursor.close()
+                conexao.close()
+            except:
+                messagebox.showerror(message="Erro ao cadastrar")
+            finally:
+                conexao.close()
+                
         else:
             messagebox.showerror(message="Suas senhas não são iguais! ")
+            
 
     
 

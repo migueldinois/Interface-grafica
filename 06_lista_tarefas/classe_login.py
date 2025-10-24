@@ -50,7 +50,6 @@ class Login:
  
  
 
-        
     def logar_funcao(self):
         self.resposta_usuario = self.campo_usuario.get()
         self.resposta_senha = self.campo_senha.get()
@@ -59,24 +58,24 @@ class Login:
         cursor = conexao.cursor()
         
         sql_verificar_login = """SELECT * FROM usuarios
-                                 WHERE usuario = ? AND senha = ?
-                              """ 
+                                WHERE usuario = ? AND senha = ?""" 
         
         cursor.execute(sql_verificar_login, (self.resposta_usuario, self.resposta_senha))
-        
-        # Pega o primeiro resultado   do select
         usuario_encontrado = cursor.fetchone()
-
         conexao.close()
 
         if usuario_encontrado:
             tkinter.messagebox.showinfo("Logado com sucesso!", "Aproveite o melhor aplicativo do mundo!")
+            
             self.janela.destroy()
-            # Reexibir a janela pai
-            self.janelaPai.deiconify()
+            
+            self.janelaPai.usuario_logado = self.resposta_usuario
+            
+            self.janelaPai.atualizar_lista()
 
+            self.janelaPai.janela.deiconify()
         else:
-            tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")  
+            tkinter.messagebox.showerror("Aviso!", "Seu login não existe ou está errado!")
 
 
     def tela_cadastro(self):
