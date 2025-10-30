@@ -65,7 +65,7 @@ class Login:
         conexao.close()
 
         if usuario_encontrado:
-            tkinter.messagebox.showinfo(message=f"Bem vindo(a)!", "{usuario_encontrado[0]}"415)
+            tkinter.messagebox.showinfo("Sucesso!", f"Bem vindo(a) {usuario_encontrado[0]}!")
             
             self.janela.destroy()
             
