@@ -1,0 +1,8 @@
+Projeto 31: Log de Manutenção de Veículo
+Negócios e Inventário
+Core CRUD:
+Gerenciar veículos (marca, modelo, ano, matricula).
+
+Desafio Extra:
+Sistema de **duas tabelas** (Veículos e Serviços). O usuário seleciona um veículo na primeira `Treeview` e 
+uma segunda `Treeview` mostra o histórico de serviços (ex: 'Troca de óleo', 'Revisão', data, km) *apenas* daquele veículo.
