@@ -33,7 +33,11 @@ class DuckManutencao:
 
         # Criando frame agora para adicionar coisas na servicos
         self.frame_servicos = ttk.Frame(self.janela)
-        self.frame_servicos.pack(side="bottom", pady=10)
+        self.frame_servicos.pack(pady=10)
+
+        # frame botoes servico
+        self.frame_botoes_servico = ttk.Frame(self.janela)
+        self.frame_botoes_servico.pack( pady=10)
 
 
         # Marca campo
@@ -76,6 +80,30 @@ class DuckManutencao:
         self.alterar_botao.pack(pady=10, padx=10, side="right")
 
 
+        # campo para colocar o servico, data, custo, quando selecionar na parte de carro, adicionar serviço e deletar servico
+        ttk.Label(self.frame_servicos, text="Serviço:", font=("Verdana", 12)).pack(padx=5, side="left")
+        self.servico_resposta = ttk.Entry(self.frame_servicos, width=30)
+        self.servico_resposta.pack(pady=5, padx=5, side="left")
+
+        # texto data
+        ttk.Label(self.frame_servicos, text="Data:", font=("Verdana", 12)).pack(padx=5, side="left")
+        self.data_resposta = ttk.Entry(self.frame_servicos, width=20)
+        self.data_resposta.pack(pady=5, padx=5, side="left")
+
+        # texto preço
+        ttk.Label(self.frame_servicos, text="Custo:", font=("Verdana", 12)).pack(padx=5, side="left")
+        self.custo_resposta = ttk.Entry(self.frame_servicos, width=20)
+        self.custo_resposta.pack(pady=5, padx=5, side="left")
+
+        # botao de adicionar servico
+        self.adicionar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Adicionar Serviço", style="success")
+        self.adicionar_servico_botao.pack(pady=10, padx=10, side="left")
+        # botao de deletar servico
+        self.deletar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Deletar Serviço", style="danger")
+        self.deletar_servico_botao.pack(pady=10, padx=10, side="right")
+        # botao de alterar servico
+        self.alterar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Alterar Serviço", style="primary")
+        self.alterar_servico_botao.pack(pady=10, padx=10, side="right")
 
         
 
@@ -121,19 +149,20 @@ class DuckManutencao:
         self.servicos.column("custo", width=150, anchor="center")
 
 
-        # Conectando, criando cursor, e tambemm criando a tabela aqui
+        #################################### CRIANDO TABELA DE CARROS ##################################
 
 
         conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
         cursor = conexao.cursor()
 
         sql_tabela_carros = """CREATE TABLE IF NOT EXISTS carros(
-                            matricula INTEGER PRIMARY KEY AUTOINCREMENT,
-                            marca VARCHAR(50) NOT NULL,
-                            modelo VARCHAR(50) NOT NULL,
-                            ano varchar(4) NOT NULL)
-                            """
-        
+            matricula VARCHAR(100) PRIMARY KEY,
+            marca VARCHAR(50) NOT NULL,
+            modelo VARCHAR(50) NOT NULL,
+            ano VARCHAR(4) NOT NULL,
+            FOREIGN KEY (matricula) REFERENCES servicos(matricula)
+        );"""
+                
         # executando
         cursor.execute(sql_tabela_carros)
          # atualizando lista
@@ -146,6 +175,43 @@ class DuckManutencao:
         cursor.close()
         conexao.close()
 
+    #################################### CRIANDO TABELA DE SERVICOS ##################################
+
+        conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
+        cursor = conexao.cursor()
+
+        sql_tabela_servicos = """CREATE TABLE IF NOT EXISTS servicos(
+                                matricula VARCHAR(100),
+                                servico VARCHAR(100) NOT NULL, 
+                                data VARCHAR(10) NOT NULL,
+                                custo VARCHAR(20) NOT NULL
+                                );
+                                """
+        
+        # executando
+        cursor.execute(sql_tabela_servicos)
+        # atualizando lista
+        self.atualizar_lista_servicos()
+        # salvando
+        conexao.commit()
+        # e fechando o cursor
+        cursor.close()
+        conexao.close()
+
+
+    def atualizar_lista_servicos(self):
+        """ Aqui atualiza a lista de servicos para sempre ter o servicos"""
+        conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
+        cursor = conexao.cursor()
+
+        sql_atualizar_servicos = """
+            SELECT servico, data, custo FROM servicos;
+            """
+        
+        cursor.execute(sql_atualizar_servicos)
+        conexao.commit()
+        conexao.close()
+        cursor.close()
 
 
     def atualizar_lista_carros(self):
@@ -172,6 +238,46 @@ class DuckManutencao:
         # Insere os dados no TreeView
         for linha in carros:
             self.carros.insert("", "end", values=linha)
+
+    def adicionar_servico(self):
+        """Essa funcao adiciona um servico ao carro que foi selecionado"""
+        selecionado = self.carros.selection()
+        if selecionado != None:
+            # pegando os campos que ele digitou
+            servico = self.servico_resposta.get()
+            data = self.data_resposta.get()
+            custo = self.custo_resposta.get()
+
+            if servico != None and data != None and custo != None:
+                # Adiciona ao banco de dados
+                conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
+                cursor = conexao.cursor()
+
+
+                adicionar_servico_sql = """
+                    INSERT INTO servicos(servico, data, custo)
+                    VALUES(?, ?, ?)
+                """
+                carro_id = self.carros.item(selecionado)["values"][0]
+                valores = [servico, data, custo]
+                cursor.execute(adicionar_servico_sql, valores)
+                conexao.commit()
+                cursor.close()
+                conexao.close()
+
+                # Atualiza o TreeView de serviços
+                self.atualizar_lista_servicos()
+
+                # Limpa os campos do formulário
+                self.servico_resposta.delete(0, "end")
+                self.data_resposta.delete(0, "end")
+                self.custo_resposta.delete(0, "end")
+            else:
+                messagebox.showwarning("Aviso", "Você esqueceu de preencher algum campo")
+            
+
+
+
 
     def alterar_funcao(self):
         """Funcao para alterar itens da lista de carros."""
@@ -271,6 +377,7 @@ class DuckManutencao:
             self.carros.delete(selecionado)
         else:
             print("Selecione um carro para deletar.")
+
 
         
 
