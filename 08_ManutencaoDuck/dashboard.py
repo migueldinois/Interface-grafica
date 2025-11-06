@@ -5,6 +5,7 @@ from tkinter import messagebox
 
 class DuckManutencao:
     def __init__(self):
+        
         # Configurações gerais
         self.janela = ttk.Window(themename="vapor")
         self.janela.title("Sistema de Log de Manutenção de Ducks")
@@ -150,7 +151,8 @@ class DuckManutencao:
 
 
         #################################### CRIANDO TABELA DE CARROS ##################################
-
+        # Aqui eu faço um negocio que fica verificando se algum item foi selecionado da tree viw
+        self.carros.bind("<<TreeviewSelect>>", self.atualizar_lista_servicos)
 
         conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
         cursor = conexao.cursor()
@@ -167,8 +169,6 @@ class DuckManutencao:
         cursor.execute(sql_tabela_carros)
          # atualizando lista
         self.atualizar_lista_carros()
-        self.atualizar_lista_carros()
-
         # salvando 
         conexao.commit()
        
@@ -193,24 +193,11 @@ class DuckManutencao:
         cursor.execute(sql_tabela_servicos)
         # atualizando lista
         self.atualizar_lista_servicos()
+
         # salvando
         conexao.commit()
         # e fechando o cursor
         cursor.close()
-        conexao.close()
-
-
-    def atualizar_lista_servicos(self):
-        """ Aqui atualiza a lista de servicos para sempre ter o servicos"""
-        conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
-        cursor = conexao.cursor()
-
-        sql_atualizar_servicos = """
-            SELECT servico, data, custo FROM servicos;
-            """
-        
-        cursor.execute(sql_atualizar_servicos)
-        conexao.commit()
         conexao.close()
 
 
@@ -240,34 +227,39 @@ class DuckManutencao:
         for linha in carros:
             self.carros.insert("", "end", values=linha)
 
-    def atualizar_lista_carros(self):
-        """Atualizar a lista de servicos de tree view"""
-        for item in self.servicos.children():
-            self.servicos.delete(item)
+    def atualizar_lista_servicos(self, evento=None):
+            """Atualiza a lista de servicos de tree view baseado no carro selecionado"""
+            
+            # Limpa a lista de serviços antiga
+            for item in self.servicos.get_children():
+                self.servicos.delete(item)
 
-        selecionado = self.carros.selection()
+            # Pega o carro que foi selecionado
+            selecionado = self.carros.selection()
 
-        # COnecta o banco de dados
-        conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
-        cursor = conexao.cursor()
+            # Se um carro foi selecionado...
+            if selecionado:
+                # Conecta o banco de dados
+                conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
+                cursor = conexao.cursor()
 
-        sql_atualizar_lista = """
-                                SELECT matricula, servico, data, custo
-                                WHERE matricula = ?
-                                """
-        # pegando matricula do carro selecinado
-        carro_id = self.carros.item(selecionado[0])["values"][0]
-        
-        valores = [carro_id]
+                sql_atualizar_lista = """
+                    SELECT matricula, servico, data, custo FROM servicos
+                    WHERE matricula = ?
+                """
+                
+                # Pegando matricula do carro selecionado
+                carro_id = self.carros.item(selecionado[0])["values"][0]
+                valores = (carro_id,)
 
-        cursor.execute(sql_atualizar_lista, valores)
-        servicos = cursor.fetchall()
-        cursor.close()
-        conexao.close()
+                cursor.execute(sql_atualizar_lista, valores)
+                servicos = cursor.fetchall() # Pega todos os resultados
+                cursor.close()
+                conexao.close()
 
-        # adicionando na lista
-        for linha in servicos:
-            self.servicos.insert("", "end", values=linha)
+                # Adicionando na lista de serviços
+                for linha in servicos:
+                    self.servicos.insert("", "end", values=linha[1:])
 
 
     def adicionar_servico(self):
@@ -308,6 +300,17 @@ class DuckManutencao:
                 messagebox.showwarning("Aviso", "Você esqueceu de preencher algum campo")
         
             
+    def deletar_servico(self):
+        """Essa funcao deleta um servico ao carro que foi selecionado"""
+        selecionado = self.carros.selection()
+        if selecionado:
+            # pegando os campos que ele digitou
+            servico = self.servico_resposta.get()
+            data = self.data_resposta.get()
+            custo = self.custo_resposta.get()
+
+
+
 
 
 
