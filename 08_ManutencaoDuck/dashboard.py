@@ -96,7 +96,7 @@ class DuckManutencao:
         self.custo_resposta.pack(pady=5, padx=5, side="left")
 
         # botao de adicionar servico
-        self.adicionar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Adicionar Serviço", style="success")
+        self.adicionar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Adicionar Serviço", style="success", command=self.adicionar_servico)
         self.adicionar_servico_botao.pack(pady=10, padx=10, side="left")
         # botao de deletar servico
         self.deletar_servico_botao = ttk.Button(self.frame_botoes_servico, text="Deletar Serviço", style="danger")
@@ -167,6 +167,7 @@ class DuckManutencao:
         cursor.execute(sql_tabela_carros)
          # atualizando lista
         self.atualizar_lista_carros()
+        self.atualizar_lista_carros()
 
         # salvando 
         conexao.commit()
@@ -211,7 +212,7 @@ class DuckManutencao:
         cursor.execute(sql_atualizar_servicos)
         conexao.commit()
         conexao.close()
-        cursor.close()
+
 
 
     def atualizar_lista_carros(self):
@@ -239,27 +240,58 @@ class DuckManutencao:
         for linha in carros:
             self.carros.insert("", "end", values=linha)
 
+    def atualizar_lista_carros(self):
+        """Atualizar a lista de servicos de tree view"""
+        for item in self.servicos.children():
+            self.servicos.delete(item)
+
+        selecionado = self.carros.selection()
+
+        # COnecta o banco de dados
+        conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
+        cursor = conexao.cursor()
+
+        sql_atualizar_lista = """
+                                SELECT matricula, servico, data, custo
+                                WHERE matricula = ?
+                                """
+        # pegando matricula do carro selecinado
+        carro_id = self.carros.item(selecionado[0])["values"][0]
+        
+        valores = [carro_id]
+
+        cursor.execute(sql_atualizar_lista, valores)
+        servicos = cursor.fetchall()
+        cursor.close()
+        conexao.close()
+
+        # adicionando na lista
+        for linha in servicos:
+            self.servicos.insert("", "end", values=linha)
+
+
     def adicionar_servico(self):
         """Essa funcao adiciona um servico ao carro que foi selecionado"""
         selecionado = self.carros.selection()
-        if selecionado != None:
+        if selecionado:
             # pegando os campos que ele digitou
             servico = self.servico_resposta.get()
             data = self.data_resposta.get()
             custo = self.custo_resposta.get()
 
-            if servico != None and data != None and custo != None:
+
+            if servico and data and custo: # <-- Isso verifica se as strings não estão vazias
                 # Adiciona ao banco de dados
                 conexao = sqlite3.connect("08_ManutencaoDuck/bd_manutencao_duck.sqlite")
                 cursor = conexao.cursor()
 
 
                 adicionar_servico_sql = """
-                    INSERT INTO servicos(servico, data, custo)
-                    VALUES(?, ?, ?)
+                    INSERT INTO servicos(matricula, servico, data, custo)
+                    VALUES(?, ?, ?, ?)
                 """
-                carro_id = self.carros.item(selecionado)["values"][0]
-                valores = [servico, data, custo]
+                carro_id = self.carros.item(selecionado[0])["values"][0]
+                valores = [carro_id, servico, data, custo]
                 cursor.execute(adicionar_servico_sql, valores)
                 conexao.commit()
                 cursor.close()
@@ -274,6 +306,7 @@ class DuckManutencao:
                 self.custo_resposta.delete(0, "end")
             else:
                 messagebox.showwarning("Aviso", "Você esqueceu de preencher algum campo")
+        
             
 
 
