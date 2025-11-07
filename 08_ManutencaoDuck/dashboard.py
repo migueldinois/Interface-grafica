@@ -243,7 +243,7 @@ class DuckManutencao:
                 cursor = conexao.cursor()
 
                 sql_atualizar_lista = """
-                    SELECT matricula, servico, data, custo FROM servicos
+                    SELECT id_servico, servico, data, custo FROM servicos
                     WHERE matricula = ?
                 """
                 
@@ -257,7 +257,7 @@ class DuckManutencao:
                 conexao.close()
 
                 # Adicionando na lista de serviços
-                for linha in servicos:
+                for linha in servicos: #serve pra pular o codigo matricula
                     self.servicos.insert("", "end", values=linha)
 
 
@@ -282,7 +282,7 @@ class DuckManutencao:
                     VALUES(?, ?, ?, ?)
                 """
                 carro_id = self.carros.item(selecionado[0])["values"][0]
-                valores = [carro_id, servico, data, custo]
+                valores = [carro_id ,servico, data, custo]
                 cursor.execute(adicionar_servico_sql, valores)
                 conexao.commit()
                 cursor.close()
